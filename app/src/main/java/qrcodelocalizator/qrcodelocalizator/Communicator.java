@@ -2,11 +2,20 @@ package qrcodelocalizator.qrcodelocalizator;
 
 import android.os.AsyncTask;
 import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.net.ssl.HttpsURLConnection;
+
 class Communicator {
+
+    String lineEnd  = "\r\n";
+    String twoHyphens = "--";
+    String boundary =  "*****";
 
     ResponseModel addRoom(RoomModel room) {
         Gson gson = new Gson();
@@ -15,6 +24,17 @@ class Communicator {
         ResponseModel response = null;
         try{
             response = new PostRoom().execute(jsonBody).get();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return response;
+    }
+
+    ResponseModel addQRCode(String roomId, byte[] qrCode){
+        ResponseModel response = null;
+        try{
+            response = new PostQRCode(roomId).execute(qrCode).get();
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -42,8 +62,15 @@ class Communicator {
                 os.flush();
                 os.close();
 
-                response = new ResponseModel(connection.getResponseCode(),
-                        connection.getResponseMessage());
+                String message="";
+                if (connection.getResponseCode() == HttpsURLConnection.HTTP_CREATED) {
+                    String line;
+                    BufferedReader br=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    while ((line=br.readLine()) != null) {
+                        message+=line;
+                    }
+                }
+                response = new ResponseModel(connection.getResponseCode(), message);
 
                 connection.disconnect();
             } catch (Exception e) {
@@ -53,4 +80,58 @@ class Communicator {
         }
     }
 
+    private class PostQRCode extends AsyncTask<byte [], Void, ResponseModel> {
+
+        private String roomId;
+
+        PostQRCode(String roomId){
+            this.roomId = roomId;
+        }
+
+        @Override
+        protected ResponseModel doInBackground(byte[]... params) {
+            ResponseModel response = null;
+            try {
+                URL url = new URL("http://" + Config.serverIP + "/room/" + roomId + "/qrCode");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setDoOutput(true);
+                connection.setDoInput(true);
+                connection.setUseCaches(false);
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Connection", "Keep-Alive");
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+                DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+                outputStream.writeBytes("Content-Disposition: form-data;" +
+                        " name=\"" + "qrCode" + "\"; filename=\"" + "qrCode.jpg" +"\"" + lineEnd);
+                outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
+
+                outputStream.writeBytes(lineEnd);
+                outputStream.write(params[0]);
+                outputStream.writeBytes(lineEnd);
+
+                outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                outputStream.flush();
+                outputStream.close();
+
+                String message="";
+                if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+                    String line;
+                    BufferedReader br=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    while ((line=br.readLine()) != null) {
+                        message+=line;
+                    }
+                }
+                response = new ResponseModel(connection.getResponseCode(), message);
+
+                connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+    }
 }

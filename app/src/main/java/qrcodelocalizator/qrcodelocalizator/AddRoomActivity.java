@@ -1,7 +1,9 @@
 package qrcodelocalizator.qrcodelocalizator;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 
 public class AddRoomActivity extends AppCompatActivity {
@@ -55,7 +58,17 @@ public class AddRoomActivity extends AppCompatActivity {
 
         ResponseModel postRoomResponse = communicator.addRoom(room);
         if(postRoomResponse.getStatusCode() == HttpURLConnection.HTTP_CREATED){
-            Toast.makeText(this, "OK", Toast.LENGTH_LONG).show();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Bitmap qrCodeBitmap = ((BitmapDrawable)qrCode.getDrawable()).getBitmap();
+            qrCodeBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+
+            ResponseModel postQRCodeResponse = communicator.addQRCode(postRoomResponse.getMessage(),
+                    stream.toByteArray());
+
+            if(postQRCodeResponse.getStatusCode() == HttpURLConnection.HTTP_OK)
+                Toast.makeText(this, "Room successfully added", Toast.LENGTH_LONG).show();
+            else
+                Toast.makeText(this, postQRCodeResponse.getMessage(), Toast.LENGTH_LONG).show();
         }
         else
             Toast.makeText(this, postRoomResponse.getMessage(), Toast.LENGTH_LONG).show();
