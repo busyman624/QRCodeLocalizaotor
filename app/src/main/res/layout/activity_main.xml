@@ -20,12 +20,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/AddRoom"
+            android:enabled="false"
             android:text="Add Room"
             android:onClick="onAddRoomClick"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/FindRoom"
+            android:enabled="false"
             android:text="Find Room"
             android:onClick="onFindRoomClick"/>
     </LinearLayout>

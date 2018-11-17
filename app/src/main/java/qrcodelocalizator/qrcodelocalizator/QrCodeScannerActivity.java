@@ -1,49 +1,69 @@
 package qrcodelocalizator.qrcodelocalizator;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.hardware.camera2.CameraManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.Result;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
+
+
+import java.io.ByteArrayOutputStream;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class QrCodeScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
 
+    private byte[] getQRCodeBytes(String roomNumber){
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            BitMatrix bitMatrix = multiFormatWriter.encode(roomNumber, BarcodeFormat.QR_CODE,100,100);
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.createBitmap(bitMatrix);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        } catch (WriterException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+
         if (checkSelfPermission(Manifest.permission.CAMERA)!= PackageManager.PERMISSION_GRANTED)
         {
             requestPermissions(new String[]{Manifest.permission.CAMERA},
                     Constans.CAMERA_PERMISSION_CODE);
         }
-        // Programmatically initialize the scanner view
         mScannerView = new ZXingScannerView(this);
-        // Set the scanner view as the content view
         setContentView(mScannerView);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Register ourselves as a handler for scan results.
+
         mScannerView.setResultHandler(this);
-        // Start camera on resume
         mScannerView.startCamera();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        // Stop camera on pause
+
         mScannerView.stopCamera();
     }
 
@@ -51,6 +71,7 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
     public void handleResult(Result rawResult) {
         Intent intent = new Intent();
         intent.putExtra(Constans.QR_CODE_TEXT, rawResult.getText());
+        intent.putExtra(Constans.QR_CODE_BYTES, getQRCodeBytes(rawResult.getText()));
         setResult(RESULT_OK, intent);
         finish();
     }

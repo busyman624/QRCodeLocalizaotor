@@ -8,5 +8,5 @@ public class Constans {
     static final int FIND_ROOM_CODE = 1;
 
     static final String QR_CODE_TEXT = "QR_CODE_TEXT";
-    static final String QR_CODE_BYES = "QR_CODE_BYTES";
+    static final String QR_CODE_BYTES = "QR_CODE_BYTES";
 }

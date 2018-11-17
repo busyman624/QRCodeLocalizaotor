@@ -15,7 +15,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".QrCodeScannerActivity"></activity>
+        <activity android:name=".QrCodeScannerActivity" />
+        <activity android:name=".AddRoomActivity"></activity>
     </application>
 
 </manifest>

@@ -8,33 +8,27 @@ import java.net.URL;
 
 class Communicator {
 
-    private String serverIP;
-
-    void setServerIP(String serverIP){
-        this.serverIP = serverIP;
-    }
-
-    String addRoom(RoomModel room) {
+    ResponseModel addRoom(RoomModel room) {
         Gson gson = new Gson();
         String jsonBody = gson.toJson(room);
 
-        String statusCode = "-1";
+        ResponseModel response = null;
         try{
-            statusCode = new PostRoom().execute(jsonBody).get();
+            response = new PostRoom().execute(jsonBody).get();
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        return statusCode;
+        return response;
     }
 
-    private class PostRoom extends AsyncTask<String, Void, String> {
+    private class PostRoom extends AsyncTask<String, Void, ResponseModel> {
 
         @Override
-        protected String doInBackground(String... params) {
-            String statusCode="-1";
+        protected ResponseModel doInBackground(String... params) {
+            ResponseModel response = null;
             try {
-                URL url = new URL("http://" + serverIP + "/room/add");
+                URL url = new URL("http://" + Config.serverIP + "/room/add");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -48,13 +42,14 @@ class Communicator {
                 os.flush();
                 os.close();
 
-                statusCode = Integer.toString(connection.getResponseCode());
+                response = new ResponseModel(connection.getResponseCode(),
+                        connection.getResponseMessage());
 
                 connection.disconnect();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return statusCode;
+            return response;
         }
     }
 
