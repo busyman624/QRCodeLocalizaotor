@@ -57,7 +57,8 @@ public class GetRoomActivity extends AppCompatActivity {
         type.setText(response.getRoom().getType());
         availability.setText(response.getRoom().getAvailability());
         description.setText(response.getRoom().getDescription());
-
+        qrCode.setImageBitmap(communicator.getAttachment(roomNumber.getText().toString(), "qrCode"));
+        map.setImageBitmap(communicator.getAttachment(roomNumber.getText().toString(), "map"));
     }
 
     public void onCancelClick(View view){
@@ -70,9 +71,12 @@ public class GetRoomActivity extends AppCompatActivity {
         if (requestCode == Constans.ADD_ROOM_CODE) {
             if (resultCode == RESULT_OK) {
                 roomNumber.setText(intent.getStringExtra(Constans.QR_CODE_TEXT));
-                byte[] qrCodeBytes = intent.getByteArrayExtra(Constans.QR_CODE_BYTES);
-                qrCode.setImageBitmap(BitmapFactory.decodeByteArray(qrCodeBytes, 0, qrCodeBytes.length));
                 getButton.setEnabled(true);
+                type.setText(null);
+                availability.setText(null);
+                description.setText(null);
+                qrCode.setImageBitmap(null);
+                map.setImageBitmap(null);
             }
         }
     }

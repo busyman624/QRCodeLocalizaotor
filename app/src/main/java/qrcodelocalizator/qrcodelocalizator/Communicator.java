@@ -1,10 +1,13 @@
 package qrcodelocalizator.qrcodelocalizator;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -52,6 +55,17 @@ class Communicator {
         }
 
         return response;
+    }
+
+    Bitmap getAttachment(String roomNumber, String attachmentType){
+        Bitmap attachment = null;
+        try{
+            attachment = new GetAttachment().execute(roomNumber, attachmentType).get();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return attachment;
     }
 
     private class PostRoom extends AsyncTask<String, Void, ResponseModel> {
@@ -175,6 +189,34 @@ class Communicator {
                 e.printStackTrace();
             }
             return response;
+        }
+    }
+
+    private class GetAttachment extends AsyncTask<String, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            Bitmap bitmap = null;
+            try {
+                URL url = new URL("http://" + Config.serverIP + "/room/" + params[0]
+                        + "/" + params[1]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                connection.setRequestProperty("Accept","application/json");
+                connection.setDoInput(true);
+
+                if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+                    String line;
+                    InputStream is = connection.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(is);
+                }
+
+                connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return bitmap;
         }
     }
 }
