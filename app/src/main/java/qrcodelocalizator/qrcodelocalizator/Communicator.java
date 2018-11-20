@@ -10,15 +10,22 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
 class Communicator {
 
-    String lineEnd  = "\r\n";
-    String twoHyphens = "--";
-    String boundary =  "*****";
+    ResponseModel getAvailability(){
+        ResponseModel response = null;
+        try{
+            response = new GetAvailability().execute().get();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
 
     ResponseModel addRoom(RoomModel room) {
         Gson gson = new Gson();
@@ -67,6 +74,32 @@ class Communicator {
 
         return attachment;
     }
+
+    private class GetAvailability extends AsyncTask<Void, Void, ResponseModel> {
+
+        @Override
+        protected ResponseModel doInBackground(Void ... params) {
+            ResponseModel response = null;
+            try {
+                URL url = new URL("http://" + Config.serverIP + "/room/" + "ping");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                connection.setRequestProperty("Accept","application/json");
+                connection.setConnectTimeout(5000);
+                connection.setDoInput(true);
+
+                response = new ResponseModel(connection.getResponseCode(), null);
+
+                connection.disconnect();
+            }
+            catch (Exception e) {
+                response = new ResponseModel(HttpURLConnection.HTTP_NOT_FOUND, null);
+            }
+            return response;
+        }
+    }
+
 
     private class PostRoom extends AsyncTask<String, Void, ResponseModel> {
 
@@ -141,6 +174,10 @@ class Communicator {
 
         private String roomId;
 
+        String lineEnd  = "\r\n";
+        String twoHyphens = "--";
+        String boundary =  "*****";
+
         PostQRCode(String roomId){
             this.roomId = roomId;
         }
@@ -207,7 +244,6 @@ class Communicator {
                 connection.setDoInput(true);
 
                 if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
-                    String line;
                     InputStream is = connection.getInputStream();
                     bitmap = BitmapFactory.decodeStream(is);
                 }

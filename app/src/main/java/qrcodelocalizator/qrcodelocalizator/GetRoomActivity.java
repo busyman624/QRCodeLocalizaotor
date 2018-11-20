@@ -1,7 +1,7 @@
 package qrcodelocalizator.qrcodelocalizator;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -44,7 +44,7 @@ public class GetRoomActivity extends AppCompatActivity {
 
     public void onGetQRCodeClick(View view){
         startActivityForResult(new Intent(this, QrCodeScannerActivity.class),
-                Constans.ADD_ROOM_CODE);
+                Constans.FIND_ROOM_CODE);
     }
 
     public void onGetClick(View view){
@@ -58,7 +58,10 @@ public class GetRoomActivity extends AppCompatActivity {
         availability.setText(response.getRoom().getAvailability());
         description.setText(response.getRoom().getDescription());
         qrCode.setImageBitmap(communicator.getAttachment(roomNumber.getText().toString(), "qrCode"));
-        map.setImageBitmap(communicator.getAttachment(roomNumber.getText().toString(), "map"));
+        Bitmap mapBimtap = communicator.getAttachment(roomNumber.getText().toString(), "map");
+        if(mapBimtap == null)
+            Toast.makeText(this, "Map is not available for this room", Toast.LENGTH_LONG).show();
+        map.setImageBitmap(mapBimtap);
     }
 
     public void onCancelClick(View view){
@@ -68,7 +71,7 @@ public class GetRoomActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == Constans.ADD_ROOM_CODE) {
+        if (requestCode == Constans.FIND_ROOM_CODE) {
             if (resultCode == RESULT_OK) {
                 roomNumber.setText(intent.getStringExtra(Constans.QR_CODE_TEXT));
                 getButton.setEnabled(true);

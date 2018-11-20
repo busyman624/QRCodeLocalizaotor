@@ -6,12 +6,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import java.net.HttpURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText IPAddressBox;
     private Button addRoom;
     private Button findRoom;
+    private Button check;
+
+    private Communicator communicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,12 +25,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         gatherViews();
+        communicator = new Communicator();
     }
 
     private void gatherViews(){
-        IPAddressBox = (EditText)findViewById(R.id.IPAddress);
-        addRoom = (Button)findViewById(R.id.AddRoom);
-        findRoom = (Button)findViewById(R.id.FindRoom);
+        IPAddressBox = findViewById(R.id.IPAddress);
+        addRoom = findViewById(R.id.AddRoom);
+        findRoom = findViewById(R.id.FindRoom);
+        check = findViewById(R.id.Check);
     }
 
     public void onAddRoomClick(View view){
@@ -36,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onOKClick(View view){
-        IPAddressBox.setText("192.168.0.136:8080"); //DEBUG STUFF
-        addRoom.setEnabled(true);
-        findRoom.setEnabled(true);
         IPAddressBox.setEnabled(false);
+        check.setEnabled(true);
         Config.serverIP = IPAddressBox.getText().toString();
     }
 
@@ -47,5 +53,20 @@ public class MainActivity extends AppCompatActivity {
         addRoom.setEnabled(false);
         findRoom.setEnabled(false);
         IPAddressBox.setEnabled(true);
+        check.setEnabled(false);
+    }
+
+    public void onCheckClick(View view){
+        if(communicator.getAvailability().getStatusCode() == HttpURLConnection.HTTP_OK){
+            Toast.makeText(this, "Connection established", Toast.LENGTH_LONG).show();
+            addRoom.setEnabled(true);
+            findRoom.setEnabled(true);
+        }
+        else{
+            IPAddressBox.setEnabled(true);
+            Toast.makeText(this, "Cannot connect to the api. " +
+                    "Check IP Address and try again", Toast.LENGTH_LONG).show();
+        }
+        check.setEnabled(false);
     }
 }

@@ -42,7 +42,7 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:id="@+id/IPAddress"
-            android:text="Server IP Address" />
+            android:text="ServerIPAddress:Port" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -61,6 +61,13 @@
                 android:onClick="onEditClick"/>
         </LinearLayout>
     </LinearLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/Check"
+        android:enabled="false"
+        android:text="Check"
+        android:onClick="onCheckClick"/>
 </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

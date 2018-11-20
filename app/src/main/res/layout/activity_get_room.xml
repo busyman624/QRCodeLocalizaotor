@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:padding="10dp"
-                    android:text="Numer sali: "/>
+                    android:text="Room Number: "/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:padding="10dp"
-                    android:text="Typ sali: "/>
+                    android:text="Type: "/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:padding="10dp"
-                    android:text="Dostępność: "/>
+                    android:text="Availability: "/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:padding="10dp"
-                    android:text="Opis: "/>
+                    android:text="Description: "/>
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
