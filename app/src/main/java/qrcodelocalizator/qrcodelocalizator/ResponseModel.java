@@ -4,6 +4,7 @@ public class ResponseModel {
 
     private int statusCode;
     private String message;
+    private RoomModel room;
 
     ResponseModel(int statusCode, String message){
         this.statusCode = statusCode;
@@ -18,4 +19,11 @@ public class ResponseModel {
         return message;
     }
 
+    public RoomModel getRoom(){
+        return room;
+    }
+
+    public void setRoom(RoomModel room){
+        this.room = room;
+    }
 }

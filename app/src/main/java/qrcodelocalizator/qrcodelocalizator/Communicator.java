@@ -31,6 +31,18 @@ class Communicator {
         return response;
     }
 
+    ResponseModel getRoom(String roomNumber){
+        ResponseModel response = null;
+        try{
+            response = new GetRoom().execute(roomNumber).get();
+            Gson gson = new Gson();
+            response.setRoom(gson.fromJson(response.getMessage(), RoomModel.class));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return response;
+    }
+
     ResponseModel addQRCode(String roomId, byte[] qrCode){
         ResponseModel response = null;
         try{
@@ -48,7 +60,7 @@ class Communicator {
         protected ResponseModel doInBackground(String... params) {
             ResponseModel response = null;
             try {
-                URL url = new URL("http://" + Config.serverIP + "/room/add");
+                URL url = new URL("http://" + Config.serverIP + "/room");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -64,6 +76,37 @@ class Communicator {
 
                 String message="";
                 if (connection.getResponseCode() == HttpsURLConnection.HTTP_CREATED) {
+                    String line;
+                    BufferedReader br=new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    while ((line=br.readLine()) != null) {
+                        message+=line;
+                    }
+                }
+                response = new ResponseModel(connection.getResponseCode(), message);
+
+                connection.disconnect();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+    }
+
+    private class GetRoom extends AsyncTask<String, Void, ResponseModel> {
+
+        @Override
+        protected ResponseModel doInBackground(String... params) {
+            ResponseModel response = null;
+            try {
+                URL url = new URL("http://" + Config.serverIP + "/room/" + params[0]);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                connection.setRequestProperty("Accept","application/json");
+                connection.setDoInput(true);
+
+                String message="";
+                if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
                     String line;
                     BufferedReader br=new BufferedReader(new InputStreamReader(connection.getInputStream()));
                     while ((line=br.readLine()) != null) {

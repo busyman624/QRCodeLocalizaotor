@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".QrCodeScannerActivity" />
-        <activity android:name=".AddRoomActivity"></activity>
+        <activity android:name=".AddRoomActivity" />
+        <activity android:name=".GetRoomActivity"></activity>
     </application>
 
 </manifest>

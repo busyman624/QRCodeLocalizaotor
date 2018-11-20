@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onFindRoomClick(View view){
-
+        startActivity(new Intent(this, GetRoomActivity.class));
     }
 
     public void onOKClick(View view){

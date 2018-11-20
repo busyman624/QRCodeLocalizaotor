@@ -10,15 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 
 public class AddRoomActivity extends AppCompatActivity {
-
-    private LinearLayout layout;
     private EditText roomNumber;
     private EditText type;
     private EditText availability;
@@ -38,13 +35,12 @@ public class AddRoomActivity extends AppCompatActivity {
     }
 
     private void gatherViews(){
-        layout = (LinearLayout)findViewById(R.id.AddLayout);
-        roomNumber = (EditText)findViewById(R.id.AddRoomNumber);
-        type = (EditText)findViewById(R.id.AddType);
-        availability = (EditText)findViewById(R.id.AddAvailability);
-        description = (EditText)findViewById(R.id.AddDescription);
-        qrCode = (ImageView)findViewById(R.id.AddedQRCode);
-        addButton = (Button)findViewById(R.id.AddButton);
+        roomNumber = findViewById(R.id.AddRoomNumber);
+        type = findViewById(R.id.AddType);
+        availability = findViewById(R.id.AddAvailability);
+        description = findViewById(R.id.AddDescription);
+        qrCode = findViewById(R.id.AddedQRCode);
+        addButton = findViewById(R.id.AddButton);
     }
 
     public void onAddQRCodeClick(View view){
@@ -53,6 +49,7 @@ public class AddRoomActivity extends AppCompatActivity {
     }
 
     public void onAddClick(View view){
+
         RoomModel room = new RoomModel(roomNumber.getText().toString(), type.getText().toString(),
                 availability.getText().toString(), description.getText().toString());
 
@@ -71,7 +68,8 @@ public class AddRoomActivity extends AppCompatActivity {
                 Toast.makeText(this, postQRCodeResponse.getMessage(), Toast.LENGTH_LONG).show();
         }
         else
-            Toast.makeText(this, postRoomResponse.getMessage(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Room already exists", Toast.LENGTH_LONG).show();
+
         finish();
     }
 
