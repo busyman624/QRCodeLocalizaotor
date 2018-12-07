@@ -10,7 +10,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:id="@+id/GetLayout">
+        android:id="@+id/GetLayout"
+        android:background="@drawable/back2">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +22,8 @@
                 android:layout_height="wrap_content"
                 android:text="Add new QRCode"
                 android:onClick="onGetQRCodeClick"
-                />
+                style="@style/ButtonStyle"
+                android:background="@drawable/button_border"/>
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -109,7 +111,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
-                android:onClick="onCancelClick"/>
+                android:onClick="onCancelClick"
+                style="@style/ButtonStyle"
+                android:background="@drawable/button_border"/>
             <Space
                 android:layout_width="0dp"
                 android:layout_height="1dp"
@@ -121,7 +125,9 @@
                 android:id="@+id/GetButton"
                 android:enabled="false"
                 android:text="Get"
-                android:onClick="onGetClick" />
+                android:onClick="onGetClick"
+                style="@style/ButtonStyle"
+                android:background="@drawable/button_border"/>
         </LinearLayout>
     </LinearLayout>
 
