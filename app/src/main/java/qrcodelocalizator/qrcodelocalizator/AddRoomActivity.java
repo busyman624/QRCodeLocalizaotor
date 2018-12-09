@@ -15,6 +15,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.net.HttpURLConnection;
 
+//aktywnosc sluzaca do dodawania nowego pokoju, wpisywania wszystkich danych dotyczacych pokoju
+//na podstawie ktorych pozniej jest tworzony obiekt modelu
 public class AddRoomActivity extends AppCompatActivity {
     private EditText roomNumber;
     private EditText type;
@@ -43,11 +45,13 @@ public class AddRoomActivity extends AppCompatActivity {
         addButton = findViewById(R.id.AddButton);
     }
 
+    //listener do obslugi przycisku AddQRCode
     public void onAddQRCodeClick(View view){
         startActivityForResult(new Intent(this, QrCodeScannerActivity.class),
                 Constans.ADD_ROOM_CODE);
     }
 
+    //listener do obslugi przycisku Add
     public void onAddClick(View view){
 
         RoomModel room = new RoomModel(roomNumber.getText().toString(), type.getText().toString(),
@@ -73,11 +77,13 @@ public class AddRoomActivity extends AppCompatActivity {
         finish();
     }
 
+    //listner do obslugi przycisku cancel
     public void onCancelClick(View view){
         Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
         finish();
     }
 
+    //metoda, ktora odbiera zdjecie qr i zapisany w nim tekst z aktywnosci do skanowania kodu
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Constans.ADD_ROOM_CODE) {

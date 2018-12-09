@@ -1,5 +1,6 @@
 package qrcodelocalizator.qrcodelocalizator;
 
+//model odpowiedzi serwera
 public class ResponseModel {
 
     private int statusCode;

@@ -14,8 +14,11 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
+//klasa odpowiadająca za komunikację z API
 class Communicator {
 
+    //metoda tworząca nowy obiekt klasy odpowiedzialnej za wywołanie zapytania GET /room/ping
+    //na wcisniecie przycisku CHECK na MainActivity
     ResponseModel getAvailability(){
         ResponseModel response = null;
         try{
@@ -26,6 +29,8 @@ class Communicator {
         return response;
     }
 
+    //metoda tworzaca nowy obiekt klasy odpowiedzialnej za wywolanie zapytania POST /room
+    //na wcisniecie przycisku ADD na AddRoomActivity
     ResponseModel addRoom(RoomModel room) {
         Gson gson = new Gson();
         String jsonBody = gson.toJson(room);
@@ -40,6 +45,8 @@ class Communicator {
         return response;
     }
 
+    //metoda tworzaca nowy obiekt klasy odpowiedzialnej za wywolanie zapytania GET /room/{roomNumber}
+    //na wcisniecie przycisku GET na GetRoomActivity
     ResponseModel getRoom(String roomNumber){
         ResponseModel response = null;
         try{
@@ -52,6 +59,8 @@ class Communicator {
         return response;
     }
 
+    //metoda tworzaca nowy obiekt klasy odpowiedzialnej za wywolanie zapytania POST /room/{roomNumber}/qrCode
+    //na wcisniecie przycisku ADD na AddRoomActivity, zaraz wykonaniu requesta na POST /room jesli OK
     ResponseModel addQRCode(String roomId, byte[] qrCode){
         ResponseModel response = null;
         try{
@@ -63,6 +72,8 @@ class Communicator {
         return response;
     }
 
+    //metoda tworzaca nowy obiekt klasy odpowiedzialnej za wywolanie zapytania GET /room/{roomNumber}/qrCode + GET /room/{roomNumber}/map
+    //na wcisniecie przycisku GET na GetRoomActivity, zaraz po wykonaniu GET /room/{roomNumber} jesli OK
     Bitmap getAttachment(String roomNumber, String attachmentType){
         Bitmap attachment = null;
         try{
@@ -74,6 +85,7 @@ class Communicator {
         return attachment;
     }
 
+    //klasa umożliwiajaca asynchroniczne wywolanie requestu GET /room/ping do API, czyli żeby to się działo w tle
     private class GetAvailability extends AsyncTask<Void, Void, ResponseModel> {
 
         @Override
@@ -100,6 +112,7 @@ class Communicator {
     }
 
 
+    //klasa umożliwiajaca asynchroniczne wywolanie requestu POST /room do API, czyli żeby to się działo w tle
     private class PostRoom extends AsyncTask<String, Void, ResponseModel> {
 
         @Override
@@ -138,6 +151,7 @@ class Communicator {
         }
     }
 
+    //klasa umożliwiajaca asynchroniczne wywolanie requestu GET /room/{roomNumber} do API, czyli żeby to się działo w tle
     private class GetRoom extends AsyncTask<String, Void, ResponseModel> {
 
         @Override
@@ -169,6 +183,7 @@ class Communicator {
         }
     }
 
+    //klasa umożliwiajaca asynchroniczne wywolanie requestu POST /room/{roomNumber}/qrCode do API, czyli żeby to się działo w tle
     private class PostQRCode extends AsyncTask<byte [], Void, ResponseModel> {
 
         private String roomId;
@@ -228,6 +243,7 @@ class Communicator {
         }
     }
 
+    //klasa umożliwiajaca asynchroniczne wywolanie requestu GET /room/{roomNumber}/(qrCode lub /map) do API, czyli żeby to się działo w tle
     private class GetAttachment extends AsyncTask<String, Void, Bitmap> {
 
         @Override

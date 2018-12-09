@@ -21,9 +21,12 @@ import java.io.ByteArrayOutputStream;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
+//aktywnosc do skanowania qr kodu
 public class QrCodeScannerActivity extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
 
+    // metoda ktora tworzy nowy kod z informacji odkadowanej ze zdjecia kodu zrodlowego,
+    // bo zrodlowego zdjecia nie mozna otrzymac ze skanera
     private byte[] getQRCodeBytes(String roomNumber){
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
@@ -39,6 +42,8 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         }
     }
 
+    // sprawdza czy uzytkownik wyrazil zgode na dostep do aparatu i ustawia widok na kamere jesli tak,
+    // jesli nie to prosi o pozolenie na dostep
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -52,6 +57,7 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         setContentView(mScannerView);
     }
 
+    //odpala ponownie kamere po zminimalizowaniu lub odblokowaniu telefonu
     @Override
     public void onResume() {
         super.onResume();
@@ -60,6 +66,7 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         mScannerView.startCamera();
     }
 
+    //metoda, ktora pauzuje kamery gdy zminimalizujemy aplikacje lub zablokujemy telefon
     @Override
     public void onPause() {
         super.onPause();
@@ -67,6 +74,8 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         mScannerView.stopCamera();
     }
 
+    //metoda, ktora obsluguje zeskanowany kod, zwraca obraz kodu i odkowana informacje zawarta w kodzie
+    // do aktywnosci ktora odpalila ta aktywnosc czyli do AddRoomActivity lub GetRoomActivity
     @Override
     public void handleResult(Result rawResult) {
         Intent intent = new Intent();
@@ -76,6 +85,7 @@ public class QrCodeScannerActivity extends AppCompatActivity implements ZXingSca
         finish();
     }
 
+    //metoda ktora obsluguje pozwolenie na dostep do kamery
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 

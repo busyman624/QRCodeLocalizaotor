@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import java.net.HttpURLConnection;
 
+//aktywnosc do pobierania informacji z bazy o danym pokoju
 public class GetRoomActivity extends AppCompatActivity {
     private EditText roomNumber;
     private EditText type;
@@ -42,11 +43,13 @@ public class GetRoomActivity extends AppCompatActivity {
         getButton = findViewById(R.id.GetButton);
     }
 
+    //listener do obslugi przycisku Get.., odpala kamere
     public void onGetQRCodeClick(View view){
         startActivityForResult(new Intent(this, QrCodeScannerActivity.class),
                 Constans.FIND_ROOM_CODE);
     }
 
+    //listener do obslugi przycisku Get, pobierane sa wszystkie informacje z bazy danych dotyczace konkretnego pokoju
     public void onGetClick(View view){
         ResponseModel response = communicator.getRoom(roomNumber.getText().toString());
 
@@ -64,11 +67,13 @@ public class GetRoomActivity extends AppCompatActivity {
         map.setImageBitmap(mapBimtap);
     }
 
+    //listener do obslugi przycisku cancel
     public void onCancelClick(View view){
         Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
         finish();
     }
 
+    //metoda ktora odbiera z aktywnosci skanera, informacje odkodowana z zeskanowanego kodu qr
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Constans.FIND_ROOM_CODE) {

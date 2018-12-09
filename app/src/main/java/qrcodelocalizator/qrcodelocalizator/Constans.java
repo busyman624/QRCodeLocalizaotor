@@ -1,5 +1,6 @@
 package qrcodelocalizator.qrcodelocalizator;
 
+//klasa przechowujaca statyczne kody uzywane w calej aplikacji do poprawienia czytelnosci
 public class Constans {
 
     static final int CAMERA_PERMISSION_CODE = 100;

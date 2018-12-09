@@ -1,5 +1,7 @@
 package qrcodelocalizator.qrcodelocalizator;
 
+//model pokoju tworzony po uzupelnieniu danych i wcisnieciu przycisku wyslij lub gdy pobieramy
+// informacje z bazy danych na temat konkretnego numeru pokoju
 public class RoomModel {
 
     private String roomNumber;
